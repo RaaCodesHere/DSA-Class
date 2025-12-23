@@ -1,102 +1,104 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-// Define the structure for a single node
+// Node structure
 struct Node {
     int data;
     struct Node* next;
 };
 
-// Global pointers for the front and rear of the queue
-struct Node *front = NULL;
-struct Node *rear = NULL;
+// Front and Rear pointers
+struct Node* front = NULL;
+struct Node* rear = NULL;
 
-// Function to check if the queue is empty
+// Check if queue is empty
 int isEmpty() {
-    return (front == NULL);
+    return front == NULL;
 }
 
-// Function to add an element to the rear of the queue (Enqueue)
+// Enqueue operation
 void enqueue(int value) {
-    // Allocate memory for a new node
     struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+
     if (newNode == NULL) {
-        printf("Queue Overflow (Memory allocation failed)\\n");
+        printf("Queue Overflow (Memory allocation failed)\n");
         return;
     }
+
     newNode->data = value;
     newNode->next = NULL;
 
-    // If the queue is empty, the new node is both front and rear
     if (isEmpty()) {
         front = rear = newNode;
     } else {
-        // Otherwise, add the new node to the end and update the rear pointer
         rear->next = newNode;
         rear = newNode;
     }
-    printf("Enqueued %d\\n", value);
+
+    printf("Enqueued %d\n", value);
 }
 
-// Function to remove an element from the front of the queue (Dequeue)
+// Dequeue operation
 void dequeue() {
     if (isEmpty()) {
-        printf("Queue Underflow (Queue is empty)\\n");
+        printf("Queue Underflow (Queue is empty)\n");
         return;
     }
 
-    // Store the front node temporarily and move the front pointer
     struct Node* temp = front;
+    printf("Dequeued %d\n", temp->data);
+
     front = front->next;
 
-    // If the queue becomes empty after dequeue, update the rear pointer as well
     if (front == NULL) {
         rear = NULL;
     }
 
-    printf("Dequeued %d\\n", temp->data);
-    free(temp); // Free the memory of the removed node
+    free(temp);
 }
 
-// Function to get the front element of the queue without removing it (Peek)
+// Peek operation
 int peek() {
     if (isEmpty()) {
-        printf("Queue is empty. No front element.\\n");
-        return -1; // Return a sentinel value for error
+        printf("Queue is empty. No front element.\n");
+        return -1;
     }
     return front->data;
 }
 
-// Function to display the elements in the queue
+// Display queue elements
 void display() {
     struct Node* temp = front;
+
     if (isEmpty()) {
-        printf("Queue is empty.\\n");
+        printf("Queue is empty.\n");
         return;
     }
+
     printf("Queue elements: ");
     while (temp != NULL) {
         printf("%d -> ", temp->data);
         temp = temp->next;
     }
-    printf("NULL\\n");
+    printf("NULL\n");
 }
 
-// Main function to demonstrate queue operations
+// Main function
 int main() {
     enqueue(10);
     enqueue(20);
     enqueue(30);
+
     display();
 
-    printf("Front element is: %d\\n", peek());
+    printf("Front element is: %d\n", peek());
 
     dequeue();
     display();
 
     dequeue();
     dequeue();
-    dequeue(); // Attempting to dequeue from an empty queue
+    dequeue(); // Underflow case
 
     return 0;
 }
